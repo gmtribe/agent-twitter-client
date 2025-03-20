@@ -1192,6 +1192,7 @@ export async function createQuoteTweetRequest(
   text: string,
   quotedTweetId: string,
   auth: TwitterAuth,
+  replyToTweetId?: string,
   mediaData?: { data: Buffer; mediaType: string }[],
 ) {
   const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
@@ -1238,6 +1239,10 @@ export async function createQuoteTweetRequest(
     }));
   }
 
+  // Handle reply to tweet ID if provided
+  if (replyToTweetId) {
+    variables.reply = { in_reply_to_tweet_id: replyToTweetId };
+  }
   // Send the GraphQL request to create a quote tweet
   const response = await fetch(
     'https://twitter.com/i/api/graphql/a1p9RWpkYKBjWv_I3WzS-A/CreateTweet',
