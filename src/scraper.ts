@@ -850,6 +850,7 @@ export class Scraper {
   public async sendQuoteTweet(
     text: string,
     quotedTweetId: string,
+    replyToTweetId?: string,
     options?: {
       mediaData: { data: Buffer; mediaType: string }[];
     },
@@ -858,6 +859,7 @@ export class Scraper {
       text,
       quotedTweetId,
       this.auth,
+      replyToTweetId,
       options?.mediaData,
     );
   }
