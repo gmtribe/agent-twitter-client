@@ -530,7 +530,7 @@ test('scraper can quote tweet with image and video', async () => {
   ];
 
   // Send a quote tweet with both image and video attachments
-  const response = await scraper.sendQuoteTweet(quoteText, quotedTweetId, {
+  const response = await scraper.sendQuoteTweet(quoteText, quotedTweetId, undefined, {
     mediaData: mediaData,
   });
 
@@ -553,7 +553,7 @@ test('scraper can quote tweet with media', async () => {
   const mediaData = [{ data: imageBuffer, mediaType: 'image/jpeg' }];
 
   // Send a quote tweet with the image attachment
-  const response = await scraper.sendQuoteTweet(quoteText, quotedTweetId, {
+  const response = await scraper.sendQuoteTweet(quoteText, quotedTweetId, undefined, {
     mediaData: mediaData,
   });
 
