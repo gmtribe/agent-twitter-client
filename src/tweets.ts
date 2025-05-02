@@ -295,7 +295,7 @@ export async function createCreateTweetRequestV2(
   }
   const { poll, quoted_tweet_id } = options || {};
   let tweetConfig;
-  
+
   if (poll) {
     tweetConfig = {
       text,
@@ -322,7 +322,7 @@ export async function createCreateTweetRequestV2(
       text,
     };
   }
-  
+
   const tweetResponse = await v2client.v2.tweet(tweetConfig);
   let optionsConfig = {};
   if (options?.poll) {
@@ -496,7 +496,7 @@ export async function createCreateTweetRequest(
   };
 
   if (hideLinkPreview) {
-    variables["card_uri"] = "tombstone://card"
+    variables['card_uri'] = 'tombstone://card';
   }
 
   if (mediaData && mediaData.length > 0) {
@@ -907,6 +907,46 @@ export async function getTweet(
   return tweets.find((tweet) => tweet.id === id) ?? null;
 }
 
+export function getTweetAndReplies(
+  id: string,
+  auth: TwitterAuth,
+): AsyncGenerator<Tweet, void> {
+  return getTweetTimeline(id, 40, async (q, mt, c) => {
+    return fetchTweetAndReplies(q, mt, c, auth);
+  });
+}
+
+export async function fetchTweetAndReplies(
+  tweetId: string,
+  maxTweets: number,
+  cursor: string | undefined,
+  auth: TwitterAuth,
+): Promise<QueryTweetsResponse> {
+  if (maxTweets > 40) {
+    maxTweets = 40;
+  }
+
+  const tweetDetailRequest = apiRequestFactory.createTweetDetailRequest();
+  tweetDetailRequest.variables.focalTweetId = tweetId;
+  // userTweetsRequest.variables.count = maxTweets;
+  tweetDetailRequest.variables.includePromotedContent = false; // true on the website
+
+  if (cursor != null && cursor != '') {
+    tweetDetailRequest.variables['cursor'] = cursor;
+  }
+
+  const res = await requestApi<ThreadedConversation>(
+    tweetDetailRequest.toRequestUrl(),
+    auth,
+  );
+
+  if (!res.success) {
+    throw res.err;
+  }
+
+  return parseThreadedConversation(res.value);
+}
+
 export async function getTweetV2(
   id: string,
   auth: TwitterAuth,
@@ -1059,9 +1099,12 @@ async function uploadMedia(
   } else {
     // Handle image upload
     const form = new FormData();
-    form.append('media', new Blob([mediaData], {
-      type: mediaType,
-    }));
+    form.append(
+      'media',
+      new Blob([mediaData], {
+        type: mediaType,
+      }),
+    );
 
     const response = await fetch(uploadUrl, {
       method: 'POST',
@@ -1543,17 +1586,17 @@ export async function getArticle(
  * All comments must remain in English.
  */
 export async function fetchRetweetersPage(
-    tweetId: string,
-    auth: TwitterAuth,
-    cursor?: string,
-    count = 40,
+  tweetId: string,
+  auth: TwitterAuth,
+  cursor?: string,
+  count = 40,
 ): Promise<{
   retweeters: Retweeter[];
   bottomCursor?: string;
   topCursor?: string;
 }> {
   const baseUrl =
-      'https://twitter.com/i/api/graphql/VSnHXwLGADxxtetlPnO7xg/Retweeters';
+    'https://twitter.com/i/api/graphql/VSnHXwLGADxxtetlPnO7xg/Retweeters';
 
   // Build query parameters
   const variables = {
@@ -1587,7 +1630,8 @@ export async function fetchRetweetersPage(
     creator_subscriptions_quote_tweet_preview_enabled: false,
     freedom_of_speech_not_reach_fetch_enabled: true,
     standardized_nudges_misinfo: true,
-    tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: true,
+    tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled:
+      true,
     rweb_video_timestamps_enabled: true,
     longform_notetweets_rich_text_read_enabled: true,
     longform_notetweets_inline_media_enabled: true,
@@ -1628,7 +1672,7 @@ export async function fetchRetweetersPage(
 
   const json = await response.json();
   const instructions =
-      json?.data?.retweeters_timeline?.timeline?.instructions || [];
+    json?.data?.retweeters_timeline?.timeline?.instructions || [];
 
   const retweeters: Retweeter[] = [];
   let bottomCursor: string | undefined;
@@ -1653,16 +1697,16 @@ export async function fetchRetweetersPage(
 
         // Capture the bottom cursor
         if (
-            entry.content?.entryType === 'TimelineTimelineCursor' &&
-            entry.content?.cursorType === 'Bottom'
+          entry.content?.entryType === 'TimelineTimelineCursor' &&
+          entry.content?.cursorType === 'Bottom'
         ) {
           bottomCursor = entry.content.value;
         }
 
         // Capture the top cursor
         if (
-            entry.content?.entryType === 'TimelineTimelineCursor' &&
-            entry.content?.cursorType === 'Top'
+          entry.content?.entryType === 'TimelineTimelineCursor' &&
+          entry.content?.cursorType === 'Top'
         ) {
           topCursor = entry.content.value;
         }
@@ -1680,8 +1724,8 @@ export async function fetchRetweetersPage(
  * @returns A list of all users that retweeted the tweet.
  */
 export async function getAllRetweeters(
-    tweetId: string,
-    auth: TwitterAuth
+  tweetId: string,
+  auth: TwitterAuth,
 ): Promise<Retweeter[]> {
   let allRetweeters: Retweeter[] = [];
   let cursor: string | undefined;
@@ -1689,10 +1733,10 @@ export async function getAllRetweeters(
   while (true) {
     // Destructure bottomCursor / topCursor
     const { retweeters, bottomCursor, topCursor } = await fetchRetweetersPage(
-        tweetId,
-        auth,
-        cursor,
-        40
+      tweetId,
+      auth,
+      cursor,
+      40,
     );
     allRetweeters = allRetweeters.concat(retweeters);
 
