@@ -41,6 +41,7 @@ import {
   getTweetsByUserId,
   TweetQuery,
   getTweet,
+  getTweetAndReplies,
   fetchListTweets,
   getTweetsAndRepliesByUserId,
   getTweetsAndReplies,
@@ -649,6 +650,10 @@ export class Scraper {
     } else {
       return getTweetAnonymous(id, this.auth);
     }
+  }
+
+  public getTweetAndReplies(id: string): AsyncGenerator<Tweet, void> {
+    return getTweetAndReplies(id, this.auth);
   }
 
   /**

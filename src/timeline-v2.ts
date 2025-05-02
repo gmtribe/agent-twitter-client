@@ -29,6 +29,8 @@ export interface TimelineEntryItemContentRaw {
   user_results?: {
     result?: TimelineUserResultRaw;
   };
+  cursorType?: string;
+  value?: string;
 }
 
 export interface TimelineEntryRaw {
@@ -375,16 +377,27 @@ export function parseAndPush(
 
 export function parseThreadedConversation(
   conversation: ThreadedConversation,
-): Tweet[] {
+): QueryTweetsResponse {
   const tweets: Tweet[] = [];
   const instructions =
     conversation.data?.threaded_conversation_with_injections_v2?.instructions ??
     [];
+  let bottomCursor: string | undefined;
+  let topCursor: string | undefined;
 
   for (const instruction of instructions) {
     const entries = instruction.entries ?? [];
     for (const entry of entries) {
       const entryContent = entry.content?.itemContent;
+
+      if (entryContent?.cursorType === 'Bottom') {
+        bottomCursor = entryContent.value;
+        continue;
+      } else if (entryContent?.cursorType === 'Top') {
+        topCursor = entryContent.value;
+        continue;
+      }
+
       if (entryContent) {
         parseAndPush(tweets, entryContent, entry.entryId, true);
       }
@@ -421,7 +434,7 @@ export function parseThreadedConversation(
     }
   }
 
-  return tweets;
+  return { tweets, next: bottomCursor, previous: topCursor };
 }
 
 export interface TimelineArticle {
