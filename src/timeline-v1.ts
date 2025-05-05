@@ -411,6 +411,7 @@ export interface QueryTweetsResponse {
   tweets: Tweet[];
   next?: string;
   previous?: string;
+  end?: boolean;
 }
 
 export function parseTimelineTweetsV1(

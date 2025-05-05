@@ -15,6 +15,7 @@ export type FetchProfiles = (
 export interface FetchTweetsResponse {
   tweets: Tweet[];
   next?: string;
+  end?: boolean;
 }
 
 export type FetchTweets = (
@@ -70,7 +71,7 @@ export async function* getTweetTimeline(
       cursor,
     );
 
-    const { tweets, next } = batch;
+    const { tweets, next, end } = batch;
 
     if (tweets.length === 0) {
       break;
@@ -86,5 +87,7 @@ export async function* getTweetTimeline(
 
       nTweets++;
     }
+
+    if (end) break;
   }
 }
