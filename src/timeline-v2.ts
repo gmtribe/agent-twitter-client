@@ -81,6 +81,7 @@ export interface TimelineInstruction {
   entries?: TimelineEntryRaw[];
   entry?: TimelineEntryRaw;
   type?: string;
+  direction?: string;
 }
 
 export interface TimelineV2 {
@@ -384,9 +385,17 @@ export function parseThreadedConversation(
     [];
   let bottomCursor: string | undefined;
   let topCursor: string | undefined;
+  let endOfConversation = false;
 
   for (const instruction of instructions) {
     const entries = instruction.entries ?? [];
+    if (
+      instruction.type === 'TimelineTerminateTimeline' &&
+      instruction.direction === 'Bottom'
+    ) {
+      endOfConversation = true;
+    }
+
     for (const entry of entries) {
       const entryContent = entry.content?.itemContent;
 
@@ -434,7 +443,12 @@ export function parseThreadedConversation(
     }
   }
 
-  return { tweets, next: bottomCursor, previous: topCursor };
+  return {
+    tweets,
+    next: bottomCursor,
+    previous: topCursor,
+    end: endOfConversation || bottomCursor == null,
+  };
 }
 
 export interface TimelineArticle {
