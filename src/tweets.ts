@@ -903,7 +903,7 @@ export async function getTweet(
     return null;
   }
 
-  const tweets = parseThreadedConversation(res.value);
+  const tweets = parseThreadedConversation(res.value).tweets;
   return tweets.find((tweet) => tweet.id === id) ?? null;
 }
 
