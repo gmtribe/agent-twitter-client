@@ -466,15 +466,15 @@ export async function createCreateTweetRequest(
   mediaData?: { data: Buffer; mediaType: string }[],
   hideLinkPreview = false,
 ) {
-  const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+  const twitterUrl = 'https://twitter.com';
 
-  const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+  const cookies = await auth.cookieJar().getCookies(twitterUrl);
   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
 
   //@ ts-expect-error - This is a private API.
   const headers = new Headers({
     authorization: `Bearer ${(auth as any).bearerToken}`,
-    cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    cookie: await auth.cookieJar().getCookieString(twitterUrl),
     'content-type': 'application/json',
     'User-Agent':
       'Mozilla/5.0 (Linux; Android 11; Nokia G20) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36',
@@ -584,14 +584,14 @@ export async function createCreateNoteTweetRequest(
   tweetId?: string,
   mediaData?: { data: Buffer; mediaType: string }[],
 ) {
-  const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+  const twitterUrl = 'https://twitter.com';
 
-  const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+  const cookies = await auth.cookieJar().getCookies(twitterUrl);
   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
 
   const headers = new Headers({
     authorization: `Bearer ${(auth as any).bearerToken}`,
-    cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    cookie: await auth.cookieJar().getCookieString(twitterUrl),
     'content-type': 'application/json',
     'User-Agent':
       'Mozilla/5.0 (Linux; Android 11; Nokia G20) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36',
@@ -1238,15 +1238,15 @@ export async function createQuoteTweetRequest(
   replyToTweetId?: string,
   mediaData?: { data: Buffer; mediaType: string }[],
 ) {
-  const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+  const twitterUrl = 'https://twitter.com';
 
   // Retrieve necessary cookies and tokens
-  const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+  const cookies = await auth.cookieJar().getCookies(twitterUrl);
   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
 
   const headers = new Headers({
     authorization: `Bearer ${(auth as any).bearerToken}`,
-    cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    cookie: await auth.cookieJar().getCookieString(twitterUrl),
     'content-type': 'application/json',
     'User-Agent':
       'Mozilla/5.0 (Linux; Android 11; Nokia G20) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36',
@@ -1460,15 +1460,15 @@ export async function createCreateLongTweetRequest(
   // URL for the long tweet endpoint
   const url =
     'https://x.com/i/api/graphql/YNXM2DGuE2Sff6a2JD3Ztw/CreateNoteTweet';
-  const onboardingTaskUrl = 'https://api.twitter.com/1.1/onboarding/task.json';
+  const twitterUrl = 'https://twitter.com';
 
-  const cookies = await auth.cookieJar().getCookies(onboardingTaskUrl);
+  const cookies = await auth.cookieJar().getCookies(twitterUrl);
   const xCsrfToken = cookies.find((cookie) => cookie.key === 'ct0');
 
   //@ ts-expect-error - This is a private API.
   const headers = new Headers({
     authorization: `Bearer ${(auth as any).bearerToken}`,
-    cookie: await auth.cookieJar().getCookieString(onboardingTaskUrl),
+    cookie: await auth.cookieJar().getCookieString(twitterUrl),
     'content-type': 'application/json',
     'User-Agent':
       'Mozilla/5.0 (Linux; Android 11; Nokia G20) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36',
