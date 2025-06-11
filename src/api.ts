@@ -70,6 +70,7 @@ export async function requestApi<T>(
       if (!(err instanceof Error)) {
         throw err;
       }
+      console.log(err.name, err.message);
       return {
         success: false,
         err: new Error('Failed to perform request.'),
@@ -108,7 +109,8 @@ export async function requestApi<T>(
   const transferEncoding = res.headers.get('transfer-encoding');
   if (transferEncoding === 'chunked') {
     // Handle streaming response, if a reader is present
-    const reader = typeof res.body?.getReader === 'function' ? res.body.getReader() : null;
+    const reader =
+      typeof res.body?.getReader === 'function' ? res.body.getReader() : null;
     if (!reader) {
       try {
         const text = await res.text();
